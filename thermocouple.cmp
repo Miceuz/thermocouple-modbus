@@ -1,0 +1,276 @@
+Cmp-Mod V01 Created by CvPcb (2013-mar-13)-testing date = Sun 12 May 2013 03:47:26 PM CEST
+
+BeginCmp
+TimeStamp = /518E9DC9;
+Reference = U1;
+ValeurCmp = AD8237;
+IdModule  = MSOP_8;
+EndCmp
+
+BeginCmp
+TimeStamp = /518E9DDF;
+Reference = P1;
+ValeurCmp = CONN_2;
+IdModule  = PIN_ARRAY_2X1;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EA0FF;
+Reference = R1;
+ValeurCmp = 10M;
+IdModule  = SM0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EA1E0;
+Reference = R3;
+ValeurCmp = R;
+IdModule  = SM0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EA1EB;
+Reference = R2;
+ValeurCmp = R;
+IdModule  = SM0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EA26B;
+Reference = R7;
+ValeurCmp = 10k;
+IdModule  = SM0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EA273;
+Reference = C11;
+ValeurCmp = 10uF;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EA36D;
+Reference = U2;
+ValeurCmp = TC1047;
+IdModule  = sot23;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EA88D;
+Reference = U4;
+ValeurCmp = LM358;
+IdModule  = MSOP_8;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EA9A8;
+Reference = C7;
+ValeurCmp = 100nF;
+IdModule  = SM0603_Capa;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EAA72;
+Reference = C12;
+ValeurCmp = 100nF;
+IdModule  = SM0603_Capa;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EAB48;
+Reference = R6;
+ValeurCmp = 1k;
+IdModule  = SM0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EAB63;
+Reference = R4;
+ValeurCmp = 1k;
+IdModule  = SM0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EADCC;
+Reference = P2;
+ValeurCmp = CONN_4;
+IdModule  = PIN_ARRAY_4x1;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EAEA1;
+Reference = L2;
+ValeurCmp = FERITE BEAD;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EAEC7;
+Reference = C5;
+ValeurCmp = 100uF;
+IdModule  = c_tant_E;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EAEDC;
+Reference = C6;
+ValeurCmp = 100nF;
+IdModule  = SM0603_Capa;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EAEF1;
+Reference = C8;
+ValeurCmp = 100nF;
+IdModule  = SM0603_Capa;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EAF10;
+Reference = C9;
+ValeurCmp = 10nF;
+IdModule  = SM0603_Capa;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EAF1B;
+Reference = C10;
+ValeurCmp = 1nF;
+IdModule  = SM0603_Capa;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EB05E;
+Reference = U3;
+ValeurCmp = 7805;
+IdModule  = TO220;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EB077;
+Reference = C1;
+ValeurCmp = 100uF;
+IdModule  = c_tant_E;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EB092;
+Reference = C3;
+ValeurCmp = 100nF;
+IdModule  = SM0603_Capa;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EB215;
+Reference = C16;
+ValeurCmp = 100nF;
+IdModule  = SM0603_Capa;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EB3C7;
+Reference = IC1;
+ValeurCmp = SP3485CN;
+IdModule  = SO8N;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EB97F;
+Reference = R8;
+ValeurCmp = 120;
+IdModule  = SM0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EB987;
+Reference = JP1;
+ValeurCmp = JUMPER;
+IdModule  = PIN_ARRAY_2X1;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EBAF5;
+Reference = C15;
+ValeurCmp = 100nF;
+IdModule  = SM0603_Capa;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EC02F;
+Reference = D???1;
+ValeurCmp = ADR5045;
+IdModule  = sc70;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EC082;
+Reference = R5;
+ValeurCmp = R;
+IdModule  = SM0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EC0FD;
+Reference = L1;
+ValeurCmp = FERITE BEAD;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EC109;
+Reference = C2;
+ValeurCmp = 100nF;
+IdModule  = SM0603_Capa;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EC10F;
+Reference = C4;
+ValeurCmp = 100nF;
+IdModule  = SM0603_Capa;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EC2FB;
+Reference = X1;
+ValeurCmp = CRYSTAL;
+IdModule  = HC-49V;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EC394;
+Reference = C14;
+ValeurCmp = 22pF;
+IdModule  = SM0603_Capa;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EC39A;
+Reference = C13;
+ValeurCmp = 22pF;
+IdModule  = SM0603_Capa;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EC3B6;
+Reference = R9;
+ValeurCmp = 120;
+IdModule  = SM0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /518EC47F;
+Reference = CON1;
+ValeurCmp = AVR-ISP-6;
+IdModule  = pin_array_3x2;
+EndCmp
+
+BeginCmp
+TimeStamp = /518F995E;
+Reference = IC2;
+ValeurCmp = ATTINY1634-S;
+IdModule  = SO20L;
+EndCmp
+
+EndListe
