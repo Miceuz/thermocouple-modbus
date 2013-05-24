@@ -36,10 +36,10 @@ EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
-Title ""
-Date "23 may 2013"
-Rev ""
-Comp ""
+Title "Modbus thermocouple sensor"
+Date "24 may 2013"
+Rev "1"
+Comp "wemakethings.net"
 Comment1 ""
 Comment2 ""
 Comment3 ""
@@ -1449,4 +1449,82 @@ Connection ~ 2750 2950
 Text Notes 2150 3100 0    60   ~ 0
 49mV-1.2mV=48.3mV+-1.5% \n== 10LSB
 Connection ~ 8550 4950
+$Comp
+L LED D5
+U 1 1 519FDDA0
+P 5900 4700
+F 0 "D5" H 5900 4800 50  0000 C CNN
+F 1 "LED" H 5900 4600 50  0000 C CNN
+F 2 "~" H 5900 4700 60  0000 C CNN
+F 3 "~" H 5900 4700 60  0000 C CNN
+	1    5900 4700
+	0    1    1    0   
+$EndComp
+$Comp
+L LED D4
+U 1 1 519FDDAD
+P 5700 4800
+F 0 "D4" H 5700 4900 50  0000 C CNN
+F 1 "LED" H 5700 4700 50  0000 C CNN
+F 2 "~" H 5700 4800 60  0000 C CNN
+F 3 "~" H 5700 4800 60  0000 C CNN
+	1    5700 4800
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	4150 4500 5900 4500
+Wire Wire Line
+	4250 4600 5700 4600
+$Comp
+L R R16
+U 1 1 519FDE74
+P 5900 5150
+F 0 "R16" V 5980 5150 40  0000 C CNN
+F 1 "1k" V 5907 5151 40  0000 C CNN
+F 2 "~" V 5830 5150 30  0000 C CNN
+F 3 "~" H 5900 5150 30  0000 C CNN
+	1    5900 5150
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R10
+U 1 1 519FDE7A
+P 5700 5250
+F 0 "R10" V 5780 5250 40  0000 C CNN
+F 1 "1k" V 5707 5251 40  0000 C CNN
+F 2 "~" V 5630 5250 30  0000 C CNN
+F 3 "~" H 5700 5250 30  0000 C CNN
+	1    5700 5250
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR051
+U 1 1 519FDE98
+P 5900 5400
+F 0 "#PWR051" H 5900 5400 30  0001 C CNN
+F 1 "GND" H 5900 5330 30  0001 C CNN
+F 2 "" H 5900 5400 60  0000 C CNN
+F 3 "" H 5900 5400 60  0000 C CNN
+	1    5900 5400
+	-1   0    0    -1  
+$EndComp
+$Comp
+L GND #PWR052
+U 1 1 519FDE9E
+P 5700 5500
+F 0 "#PWR052" H 5700 5500 30  0001 C CNN
+F 1 "GND" H 5700 5430 30  0001 C CNN
+F 2 "" H 5700 5500 60  0000 C CNN
+F 3 "" H 5700 5500 60  0000 C CNN
+	1    5700 5500
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	3300 4750 4250 4750
+Wire Wire Line
+	4250 4750 4250 4600
+Wire Wire Line
+	3300 4650 4150 4650
+Wire Wire Line
+	4150 4650 4150 4500
 $EndSCHEMATC

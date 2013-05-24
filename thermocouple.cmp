@@ -1,10 +1,10 @@
-Cmp-Mod V01 Created by CvPcb (2013-mar-13)-testing date = Tue 21 May 2013 08:26:05 PM CEST
+Cmp-Mod V01 Created by CvPcb (2013-mar-13)-testing date = Sat 25 May 2013 12:08:20 AM CEST
 
 BeginCmp
 TimeStamp = /518EB077;
 Reference = C1;
 ValeurCmp = 100uF;
-IdModule  = c_tant_E;
+IdModule  = C1V8;
 EndCmp
 
 BeginCmp
@@ -32,7 +32,7 @@ BeginCmp
 TimeStamp = /518EAEC7;
 Reference = C5;
 ValeurCmp = 100uF;
-IdModule  = c_tant_E;
+IdModule  = C1V8;
 EndCmp
 
 BeginCmp
@@ -190,6 +190,20 @@ IdModule  = DO-214AC(SMA);
 EndCmp
 
 BeginCmp
+TimeStamp = /519FDDAD;
+Reference = D4;
+ValeurCmp = LED;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /519FDDA0;
+Reference = D5;
+ValeurCmp = LED;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
 TimeStamp = /518EC02F;
 Reference = D???1;
 ValeurCmp = ADR5045;
@@ -249,7 +263,7 @@ BeginCmp
 TimeStamp = /518EA0FF;
 Reference = R1;
 ValeurCmp = 10M;
-IdModule  = SM0603;
+IdModule  = SM0603_Resistor;
 EndCmp
 
 BeginCmp
@@ -277,7 +291,7 @@ BeginCmp
 TimeStamp = /518EC082;
 Reference = R5;
 ValeurCmp = 1k;
-IdModule  = SM0603;
+IdModule  = SM0603_Resistor;
 EndCmp
 
 BeginCmp
@@ -291,21 +305,28 @@ BeginCmp
 TimeStamp = /518EA26B;
 Reference = R7;
 ValeurCmp = 10k;
-IdModule  = SM0603;
+IdModule  = SM0603_Resistor;
 EndCmp
 
 BeginCmp
 TimeStamp = /518EB97F;
 Reference = R8;
 ValeurCmp = 120;
-IdModule  = SM0603;
+IdModule  = SM0603_Resistor;
 EndCmp
 
 BeginCmp
 TimeStamp = /518EC3B6;
 Reference = R9;
 ValeurCmp = 10k;
-IdModule  = SM0603;
+IdModule  = SM0603_Resistor;
+EndCmp
+
+BeginCmp
+TimeStamp = /519FDE7A;
+Reference = R10;
+ValeurCmp = 1k;
+IdModule  = SM0603_Resistor;
 EndCmp
 
 BeginCmp
@@ -339,6 +360,13 @@ EndCmp
 BeginCmp
 TimeStamp = /519A01D8;
 Reference = R15;
+ValeurCmp = 1k;
+IdModule  = SM0603_Resistor;
+EndCmp
+
+BeginCmp
+TimeStamp = /519FDE74;
+Reference = R16;
 ValeurCmp = 1k;
 IdModule  = SM0603_Resistor;
 EndCmp
