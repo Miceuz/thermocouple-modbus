@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPcb (2013-mar-13)-testing date = Sat 25 May 2013 12:08:20 AM CEST
+Cmp-Mod V01 Created by CvPcb (2013-mar-13)-testing date = Sat 25 May 2013 01:02:06 PM CEST
 
 BeginCmp
 TimeStamp = /518EB077;
@@ -173,20 +173,6 @@ TimeStamp = /51989CF2;
 Reference = D1;
 ValeurCmp = DIODE;
 IdModule  = DO-214AA(SMB);
-EndCmp
-
-BeginCmp
-TimeStamp = /5198FD04;
-Reference = D2;
-ValeurCmp = DIODE;
-IdModule  = DO-214AC(SMA);
-EndCmp
-
-BeginCmp
-TimeStamp = /5198FD66;
-Reference = D3;
-ValeurCmp = DIODE;
-IdModule  = DO-214AC(SMA);
 EndCmp
 
 BeginCmp
@@ -367,6 +353,20 @@ EndCmp
 BeginCmp
 TimeStamp = /519FDE74;
 Reference = R16;
+ValeurCmp = 1k;
+IdModule  = SM0603_Resistor;
+EndCmp
+
+BeginCmp
+TimeStamp = /51A09810;
+Reference = R17;
+ValeurCmp = 1k;
+IdModule  = SM0603_Resistor;
+EndCmp
+
+BeginCmp
+TimeStamp = /51A09816;
+Reference = R18;
 ValeurCmp = 1k;
 IdModule  = SM0603_Resistor;
 EndCmp

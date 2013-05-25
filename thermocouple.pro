@@ -1,4 +1,4 @@
-update=Sun 19 May 2013 01:33:57 PM CEST
+update=Sat 25 May 2013 08:51:42 AM CEST
 last_client=pcbnew
 [general]
 version=1
@@ -46,10 +46,10 @@ LibName31=ad8237
 version=1
 LastNetListRead=thermocouple.net
 UseCmpFile=1
-PadDrill="    0.000000"
-PadDrillOvalY="    0.000000"
-PadSizeH="    4.064000"
-PadSizeV="    4.064000"
+PadDrill="    3.000000"
+PadDrillOvalY="    3.000000"
+PadSizeH="    3.100000"
+PadSizeV="    3.100000"
 PcbTextSizeV="    1.500000"
 PcbTextSizeH="    1.500000"
 PcbTextThickness="    0.300000"
@@ -80,3 +80,4 @@ LibName14=dip_sockets
 LibName15=pga_sockets
 LibName16=valves
 LibName17=hole
+LibName18=conn35
