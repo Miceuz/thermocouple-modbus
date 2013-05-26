@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPcb (2013-mar-13)-testing date = Sat 25 May 2013 01:02:06 PM CEST
+Cmp-Mod V01 Created by CvPcb (2013-mar-13)-testing date = Sun 26 May 2013 11:49:44 AM CEST
 
 BeginCmp
 TimeStamp = /518EB077;
@@ -372,6 +372,20 @@ IdModule  = SM0603_Resistor;
 EndCmp
 
 BeginCmp
+TimeStamp = /51A1D35F;
+Reference = R19;
+ValeurCmp = 33;
+IdModule  = SM0603_Resistor;
+EndCmp
+
+BeginCmp
+TimeStamp = /51A1D36F;
+Reference = R20;
+ValeurCmp = 33;
+IdModule  = SM0603_Resistor;
+EndCmp
+
+BeginCmp
 TimeStamp = /518E9DC9;
 Reference = U1;
 ValeurCmp = AD8237;
@@ -397,6 +411,13 @@ TimeStamp = /518EA88D;
 Reference = U4;
 ValeurCmp = MCP6L01;
 IdModule  = MSOP_8;
+EndCmp
+
+BeginCmp
+TimeStamp = /51A1CF3D;
+Reference = U5;
+ValeurCmp = TVS_DIODE;
+IdModule  = SOT23;
 EndCmp
 
 BeginCmp
