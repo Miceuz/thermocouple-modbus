@@ -14,13 +14,13 @@ FUSE_H  = 0xD5
 FUSE_E  = 0xF9
 AVRDUDE = avrdude -c usbasp -P usb -p $(DEVICE) # edit this line for your programmer
 
-CFLAGS  = -I. -DDEBUG_LEVEL=0  -Os 
+CFLAGS  = -I. -DDEBUG_LEVEL=0  -Os
 CFLAGS += -ffunction-sections -fdata-sections
 LDFLAGS += -Wl,--gc-sections,--relax
 
-OBJECTS = main.o thermocouple_K.o
+OBJECTS = main.o thermocouple.o usart.o adc.o
 
-COMPILE = avr-gcc -DF_CPU=$(F_CPU) $(CFLAGS) $(LDFLAGS) -mmcu=$(DEVICE)  
+COMPILE = avr-gcc -DF_CPU=$(F_CPU) $(CFLAGS) $(LDFLAGS) -mmcu=$(DEVICE)
 
 ##############################################################################
 # Fuse values for particular devices
@@ -75,7 +75,7 @@ COMPILE = avr-gcc -DF_CPU=$(F_CPU) $(CFLAGS) $(LDFLAGS) -mmcu=$(DEVICE)
 #        +-------------------- CKDIV8 (divide clock by 8 -> don't divide)
 # ATMega*5 FUSE_H (Fuse high byte):
 # 0xdd = 1 1 0 1   1 1 0 1
-#        ^ ^ ^ ^   ^ \-+-/ 
+#        ^ ^ ^ ^   ^ \-+-/
 #        | | | |   |   +------ BODLEVEL 2..0 (brownout trigger level -> 2.7V)
 #        | | | |   +---------- EESAVE (preserve EEPROM on Chip Erase -> not preserved)
 #        | | | +-------------- WDTON (watchdog timer always on -> disable)
