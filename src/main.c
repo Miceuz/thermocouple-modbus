@@ -79,9 +79,10 @@ static inline void debug() {
 	char* buffer = "123456789ABCDEF00";
 
 //	int ambient = ((double)readAdc(0) * ((float)5000/(float)1024) - 1000)/20; //cia buvo kazkoks grib
-//  (x * 5 / 1024. - 1)/0.02 -- teisinga formule temperaturai paskaiciuoti
-//  x * (5 / 0.02) / 1024 - 1/0.02
-//  x * 250 / 1024 - 50
+//  (x * 5 / 1023. - 1)/0.02 -- teisinga formule temperaturai paskaiciuoti
+//  x * (5 / 0.02) / 1023 - 1/0.02
+//  x * 250 / 1023 - 50
+//  x * (250 * 1024/1023) / 1024 - 50
 
 	long adc = (long)readAdc(0);
 	usartPuts(ltoa(adc, buffer, 10));
@@ -106,7 +107,7 @@ static inline void debug() {
 	//~ USART_tx_string(", ");
 	//~ waitUsartToFinish();
 
-//	unsigned long amplifiedTc = ((long)readAdcOversampled(1) - (long)offset) * (float)5000 / (float)16384 / INSTAMP_GAIN;
+//	unsigned long amplifiedTc = ((long)readAdcOversampled(1) - (long)offset) * (float)5000 / (float)16383 / INSTAMP_GAIN;
 	unsigned long tcMv = (((long)readAdcOversampled(1) - (long)offset) * 49508) >> 14; //units - 1 uV
 
 	long compensatedTemp = mvToC(ambient, tcMv);
