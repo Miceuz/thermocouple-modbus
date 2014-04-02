@@ -88,7 +88,7 @@ static inline void debug() {
 	usartPuts(", ");
 	usartWaitToFinish();
 
-	long ambient = ((adc * 250000L) >> 10) - 50000L; //units - 1/1000 degree C
+	long ambient = ((adc * 250245L) >> 10) - 50000L; //units - 1/1000 degree C
 
 	usartPuts(ltoa(ambient, buffer, 10));
 	usartPuts(", ");
@@ -107,7 +107,7 @@ static inline void debug() {
 	//~ waitUsartToFinish();
 
 //	unsigned long amplifiedTc = ((long)readAdcOversampled(1) - (long)offset) * (float)5000 / (float)16384 / INSTAMP_GAIN;
-	unsigned long tcMv = (((long)readAdcOversampled(1) - (long)offset) * 49504) >> 14; //units - 1 uV
+	unsigned long tcMv = (((long)readAdcOversampled(1) - (long)offset) * 49508) >> 14; //units - 1 uV
 
 	long compensatedTemp = mvToC(ambient, tcMv);
 	usartPuts(ltoa(compensatedTemp, buffer, 10));
