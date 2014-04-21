@@ -8,7 +8,7 @@
 # This Revision: $Id: Makefile 692 2008-11-07 15:07:40Z cs $
 
 DEVICE  = atmega88
-F_CPU   = 8000000	# in Hz
+F_CPU   = 16000000	# in Hz
 FUSE_L  = 0xD6# see below for fuse values for particular devices
 FUSE_H  = 0xD5
 FUSE_E  = 0xF9
