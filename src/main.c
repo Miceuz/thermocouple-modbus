@@ -6,6 +6,7 @@
 #include "adc.h"
 #include "usart.h"
 #include "thermocouple.h"
+#include "I2CmasterTWI.h"
 
 #define INSTAMP_GAIN 101
 
@@ -85,15 +86,15 @@ static inline void debug() {
 //  x * (250 * 1024/1023) / 1024 - 50
 
 	long adc = (long)readAdc(0);
-	usartPuts(ltoa(adc, buffer, 10));
-	usartPuts(", ");
-	usartWaitToFinish();
+//	usartPuts(ltoa(adc, buffer, 10));
+//	usartPuts(", ");
+//	usartWaitToFinish();
 
 	long ambient = ((adc * 250245L) >> 10) - 50000L; //units - 1/1000 degree C
 
-	usartPuts(ltoa(ambient, buffer, 10));
-	usartPuts(", ");
-	usartWaitToFinish();
+//	usartPuts(ltoa(ambient, buffer, 10));
+//	usartPuts(", ");
+//	usartWaitToFinish();
 
 	unsigned long adcValue = readAdcOversampled(1);
 	filter(adcValue);
@@ -114,10 +115,13 @@ static inline void debug() {
 	usartPuts(ltoa(compensatedTemp, buffer, 10));
 	usartPuts("\r\n");
 	usartWaitToFinish();
-	_delay_ms(500);
+
+	_delay_ms(100);
 }
 
-
+void onI2CError(uint8_t requestId) {
+	usartPuts("Transmission error\r\n");
+}
 
 void main(void) {
 	sei();
@@ -127,15 +131,26 @@ void main(void) {
 	DDRD |= _BV(PD2);
 	PORTD |= _BV(PD2);
 
+	PORTC |= _BV(PC5) | _BV(PC4);//enable weak pullups
+
 	usartPuts("Hello\r\n");
 	usartWaitToFinish();
 	usartPuts("how are you? \r\n");
 	usartWaitToFinish();
+	I2CTWI_initMaster(100);
+	I2CTWI_setTransmissionErrorHandler(onI2CError);
+	I2CTWI_transmitByte(0x20 << 1, 12);
+	I2CTWI_getState();
+	
+	I2CTWI_transmit2Bytes(0x20<<1, 1, 255);
+	I2CTWI_getState();
+
 	while (1) {
 //		PORTB |= _BV(PB1);
 //		PORTB &= ~_BV(PB2);
 //		_delay_ms(10);
 		debug();
+		task_I2CTWI();
 		//~ unsigned long i;
 		//~ char* buffer = "123456789ABCDEF00";
 		//~ for(i = 0; i < 16383; i++) {
