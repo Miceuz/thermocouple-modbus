@@ -76,6 +76,32 @@ static inline uint16_t filter(int32_t thisTc) {
 	return (uint16_t) tcFiltered;
 }
 
+long integral = 0;
+long lastValue = 0;
+long setpoint = 500;
+
+uint8_t P = 16;
+uint8_t I = 5;
+uint8_t D = 0;
+
+uint8_t pidIteration(unsigned long currValue) {
+	unsigned long normCurrValue = currValue * 1000L / 170000L;
+	long error = setpoint - normCurrValue;  
+	integral += error; 
+	
+	//if(integral > 500) 
+	//	integral = 500; 
+	//if(integral < -500) 
+	//	integral = -500;  
+	long ret = P * error + I * integral/1000 + D * (lastValue - currValue);
+	lastValue = currValue;
+
+	if(ret > 1000) ret = 1000; 
+	if(ret < 0) ret = 0; 
+	
+	return ret * 255 / 1000;
+}
+
 static inline void debug() {
 	char* buffer = "123456789ABCDEF00";
 
@@ -113,9 +139,15 @@ static inline void debug() {
 
 	long compensatedTemp = mvToC(ambient, tcMv);
 	usartPuts(ltoa(compensatedTemp, buffer, 10));
+	usartPuts(", ");
+
+	uint8_t controlSignal = pidIteration(compensatedTemp);
+	usartPuts(itoa(controlSignal, buffer, 10));
 	usartPuts("\r\n");
 	usartWaitToFinish();
 
+	I2CTWI_transmit2Bytes(0x20 << 1, 1, controlSignal);
+	I2CTWI_getState();
 	_delay_ms(100);
 }
 
@@ -139,18 +171,18 @@ void main(void) {
 	usartWaitToFinish();
 	I2CTWI_initMaster(100);
 	I2CTWI_setTransmissionErrorHandler(onI2CError);
-	I2CTWI_transmitByte(0x20 << 1, 12);
-	I2CTWI_getState();
+	//I2CTWI_transmitByte(0x20 << 1, 12);
+//	I2CTWI_getState();
 	
-	I2CTWI_transmit2Bytes(0x20<<1, 1, 255);
-	I2CTWI_getState();
+	//~ I2CTWI_transmit2Bytes(0x20<<1, 1, 225);
+	//~ I2CTWI_getState();
 
 	while (1) {
 //		PORTB |= _BV(PB1);
 //		PORTB &= ~_BV(PB2);
 //		_delay_ms(10);
 		debug();
-		task_I2CTWI();
+		//task_I2CTWI();
 		//~ unsigned long i;
 		//~ char* buffer = "123456789ABCDEF00";
 		//~ for(i = 0; i < 16383; i++) {
