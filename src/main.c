@@ -12,6 +12,7 @@
 
 unsigned int currDacValue = 0;
 unsigned int tcFiltered = 0;
+char* buffer = "123456789ABCDEF00";
 
 void dacWrite(unsigned int dacValue);
 
@@ -76,34 +77,48 @@ static inline uint16_t filter(int32_t thisTc) {
 	return (uint16_t) tcFiltered;
 }
 
-long integral = 0;
-long lastValue = 0;
-long setpoint = 500;
+long integralTerm = 0;
+long previousInput = 0;
+long setpoint = 5000;
 
-uint8_t P = 16;
-uint8_t I = 5;
+uint8_t P = 2;
+uint8_t I = 1;
 uint8_t D = 0;
 
-uint8_t pidIteration(unsigned long currValue) {
-	unsigned long normCurrValue = currValue * 1000L / 170000L;
-	long error = setpoint - normCurrValue;  
-	integral += error; 
-	
-	//if(integral > 500) 
-	//	integral = 500; 
-	//if(integral < -500) 
-	//	integral = -500;  
-	long ret = P * error + I * integral/1000 + D * (lastValue - currValue);
-	lastValue = currValue;
+uint8_t pidIteration(unsigned long input) {
+	//norm to 10000
+	input = input * 10000L / 170000L;
 
-	if(ret > 1000) ret = 1000; 
-	if(ret < 0) ret = 0; 
+	long error = setpoint - input;  
+	integralTerm += I * error;
 	
-	return ret * 255 / 1000;
+	if(integralTerm / 1000L > 10000L) {
+		integralTerm = 1000L * 10000L;
+	} 
+	
+	long dInput = (input - previousInput);
+	previousInput = input;
+
+	usartPuts(ltoa(P * error, buffer, 10));
+	usartPuts(", ");
+	
+	usartPuts(ltoa(integralTerm/1000L, buffer, 10));
+	usartPuts(", ");
+	
+	long ret = P * error + integralTerm/1000L - D * dInput;
+
+	if(ret > 10000L) 
+		ret = 10000L; 
+	if(ret < 0) 
+		ret = 0; 
+
+	usartPuts(ltoa(ret, buffer, 10));
+	usartPuts(", ");
+	
+	return ret * 255L / 10000L;
 }
 
 static inline void debug() {
-	char* buffer = "123456789ABCDEF00";
 
 //	int ambient = ((double)readAdc(0) * ((float)5000/(float)1024) - 1000)/20; //cia buvo kazkoks grib
 //  (x * 5 / 1023. - 1)/0.02 -- teisinga formule temperaturai paskaiciuoti
@@ -148,7 +163,7 @@ static inline void debug() {
 
 	I2CTWI_transmit2Bytes(0x20 << 1, 1, controlSignal);
 	I2CTWI_getState();
-	_delay_ms(100);
+	_delay_ms(10);
 }
 
 void onI2CError(uint8_t requestId) {
