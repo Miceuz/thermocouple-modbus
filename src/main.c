@@ -81,8 +81,8 @@ long integralTerm = 0;
 long previousInput = 0;
 long setpoint = 5000;
 
-uint8_t P = 2;
-uint8_t I = 1;
+uint8_t P = 16;
+uint8_t I = 5;
 uint8_t D = 0;
 
 uint8_t pidIteration(unsigned long input) {
