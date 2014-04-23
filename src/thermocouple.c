@@ -1,8 +1,10 @@
+#include <stdio.h>
+
 #define POINTS_COUNT 65
 
 typedef	struct {
 	long temp;
-	unsigned long millivolts;
+	unsigned long microvolts;
 } temp_point;
 
 static temp_point thermocouplePoints[] = {
@@ -75,41 +77,20 @@ static temp_point thermocouplePoints[] = {
 };
 
 static inline unsigned long interpolate(unsigned long val, unsigned long rangeStart, unsigned long rangeEnd, unsigned long valStart, unsigned long valEnd) {
-    //~ printf ("(rangeEnd - rangeStart) = %lu - %lu = %lu\n",rangeEnd, rangeStart, (rangeEnd - rangeStart));
-    //~ printf ("(val - valStart) = %lu - %lu = %lu\n", val, valStart, (val - valStart));
-    //~ printf ("(rangeEnd - rangeStart) * (val - valStart) = %lu\n", (rangeEnd - rangeStart) * (val - valStart));
-    //~ printf ("(valEnd - valStart) = %lu-%lu=%lu\n", valEnd, valStart, (valEnd - valStart));
     return rangeStart + (rangeEnd - rangeStart) * (val - valStart) / (valEnd - valStart);
 }
 
 static inline unsigned long interpolateVoltage(unsigned long temp, unsigned char i){
-//	printf("interpolating voltage of %lu\n", temp);
-    return interpolate(temp, thermocouplePoints[i-1].millivolts, thermocouplePoints[i].millivolts, thermocouplePoints[i-1].temp, thermocouplePoints[i].temp);
+    return interpolate(temp, thermocouplePoints[i-1].microvolts, thermocouplePoints[i].microvolts, thermocouplePoints[i-1].temp, thermocouplePoints[i].temp);
 }
 
-static inline unsigned long interpolateTemperature(unsigned long millivolts, unsigned char i){
-//	printf("interpolating temp of %lu at %d \n", millivolts, i);
-    return interpolate(millivolts, thermocouplePoints[i-1].temp, thermocouplePoints[i].temp, thermocouplePoints[i-1].millivolts, thermocouplePoints[i].millivolts);
+static inline unsigned long interpolateTemperature(unsigned long microvolts, unsigned char i){
+    return interpolate(microvolts, thermocouplePoints[i-1].temp, thermocouplePoints[i].temp, thermocouplePoints[i-1].microvolts, thermocouplePoints[i].microvolts);
 }
 
-static unsigned long tempGetter(unsigned char i) {
-	return thermocouplePoints[i].temp;
-}
-
-static unsigned long millivoltsGetter(unsigned char i) {
-	return thermocouplePoints[i].millivolts;
-}
-
-static inline unsigned char search(unsigned long value, unsigned long (* getter)(unsigned char)) {
-	unsigned char i;
-	for(i = 0; i < POINTS_COUNT; i++) {
-		if(getter(i) > value) {
-			return i;
-		}
-	}
-	return POINTS_COUNT-1;
-}
-
+/**
+ * Returns the index of the first point whose temperature value is greater than argument
+ **/
 static inline unsigned char searchTemp(unsigned long temp) {
 	unsigned char i;
 	for(i = 0; i < POINTS_COUNT; i++) {
@@ -120,28 +101,46 @@ static inline unsigned char searchTemp(unsigned long temp) {
 	return POINTS_COUNT-1;
 }
 
-static inline unsigned char searchMillivolts(unsigned long millivolts) {
+/**
+ * Returns the index of the first point whose microvolts value is greater than argument
+ **/
+static inline unsigned char searchMicrovolts(unsigned long microvolts) {
 	unsigned char i;
 	for(i = 0; i < POINTS_COUNT; i++) {
-		if(thermocouplePoints[i].millivolts > millivolts) {
+		if(thermocouplePoints[i].microvolts > microvolts) {
 			return i;
 		}
 	}
 	return POINTS_COUNT-1;
 }
 
-#include <stdio.h>
-
 //TODO ambientine temperatura gali buti < 0 !!!
-
-long mvToC(unsigned long ambient, unsigned long millivolts) {
-//	printf("%ld\n", interpolateVoltage(ambient, searchTemp(ambient)));
-	millivolts += interpolateVoltage(ambient, searchTemp(ambient));
-//	printf("%ld\n", millivolts);
-	return interpolateTemperature(millivolts, searchMillivolts(millivolts));
+/**
+ * Returns temperature as a function of the ambient temperature and measured thermocouple voltage
+ **/
+long thermocoupleConvertWithCJCompensation(unsigned long microvoltsMeasured, unsigned long ambient) {
+	//convert ambient temp to microvolts
+	//and add them to the thermocouple measured microvolts 
+	unsigned long microvolts = microvoltsMeasured + interpolateVoltage(ambient, searchTemp(ambient));
+	//look up microvolts in The Table and interpolate
+	return interpolateTemperature(microvolts, searchMicrovolts(microvolts));
 }
 
-//~ void main(int argc, char **argv) {
-	//~ printf("%ld\n", mvToC(80000, 45119));
-//~ }
+/**
+ * Returns temperature, equivalent to the voltage provided in microvolts
+ */
+long thermocoupleMvToC(unsigned long microvolts) {
+	return interpolateTemperature(microvolts, searchMicrovolts(microvolts));
+}
+
+void main(int argc, char **argv) {
+	unsigned long i = 0;
+	//~ for(i = 0; i < 16383; i++) {
+		//~ unsigned long voltage = 5000000 / 16384 * i / 101;
+		//~ printf("%ld\n", thermocoupleMvToC(voltage));
+	//~ }
+	for(i = 0; i < 1200; i++) {
+		printf("%ld\n", interpolateVoltage(i, searchTemp(i));
+	}
+}
 

@@ -109,9 +109,9 @@ static inline void debug() {
 	//~ waitUsartToFinish();
 
 //	unsigned long amplifiedTc = ((long)readAdcOversampled(1) - (long)offset) * (float)5000 / (float)16383 / INSTAMP_GAIN;
-	unsigned long tcMv = (((long)readAdcOversampled(1) - (long)offset) * 49508) >> 14; //units - 1 uV
+	unsigned long tcMicrovolts = (((long)readAdcOversampled(1) - (long)offset) * 49508) >> 14; //units - 1 uV
 
-	long compensatedTemp = mvToC(ambient, tcMv);
+	long compensatedTemp = thermocoupleConvertWithCJCompensation(tcMicrovolts, ambient);
 	usartPuts(ltoa(compensatedTemp, buffer, 10));
 	usartPuts("\r\n");
 	usartWaitToFinish();
