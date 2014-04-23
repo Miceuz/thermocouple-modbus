@@ -114,9 +114,9 @@ static inline unsigned char searchMicrovolts(unsigned long microvolts) {
 	return POINTS_COUNT-1;
 }
 
-//TODO ambientine temperatura gali buti < 0 !!!
 /**
- * Returns temperature as a function of the ambient temperature and measured thermocouple voltage
+ * Returns temperature as a function of the ambient temperature and measured thermocouple voltage.
+ * Currently only positive ambient temperature is supported
  **/
 long thermocoupleConvertWithCJCompensation(unsigned long microvoltsMeasured, unsigned long ambient) {
 	//convert ambient temp to microvolts
@@ -133,14 +133,14 @@ long thermocoupleMvToC(unsigned long microvolts) {
 	return interpolateTemperature(microvolts, searchMicrovolts(microvolts));
 }
 
-void main(int argc, char **argv) {
-	unsigned long i = 0;
+//~ void main(int argc, char **argv) {
+	//~ unsigned long i = 0;
 	//~ for(i = 0; i < 16383; i++) {
 		//~ unsigned long voltage = 5000000 / 16384 * i / 101;
 		//~ printf("%ld\n", thermocoupleMvToC(voltage));
 	//~ }
-	for(i = 0; i < 1200; i++) {
-		printf("%ld\n", interpolateVoltage(i, searchTemp(i));
-	}
-}
+	//~ for(i = 0; i < 1280000; i+=1000) {
+		//~ printf("%ld\n", interpolateVoltage(i, searchTemp(i)));
+	//~ }
+//~ }
 
