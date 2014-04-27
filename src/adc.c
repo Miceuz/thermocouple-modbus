@@ -12,10 +12,10 @@ volatile unsigned char oversamplingInProgress = 0;
 
 
 ISR(ADC_vect) {
+	PORTB |= _BV(PB1);
 	if(!oversamplingInProgress) {
 		return; //in case of non oversampling conversion, just return
 	}
-	TCNT0 = 0;
 	oversamplingSum += (long)ADC;
 	sampleIndex ++;
 
@@ -25,6 +25,7 @@ ISR(ADC_vect) {
 	}
 	TIFR0 |= _BV(OCF0A);//clear timer interrupt flag so that next ADC conversion would be triggered.
 						//as we don't service COMPA interrupt, we have to clean the flag manually.
+	PORTB &= ~_BV(PB1);
 }
 
 unsigned int readAdc(unsigned char channel) {
@@ -45,14 +46,12 @@ unsigned long readAdcOversampled(unsigned char channel) {
 	ADCSRB |= _BV(ADTS0) | _BV(ADTS1); 		//trigger ADC conversion on Timer0 Compare Match A
 	ADCSRA |= _BV(ADATE); 					//ADC auto triggering enable
 
-	OCR0A = 78; 							//compare match A @ 3.2kHz
-	TCNT0 = 0;
 	ADMUX = channel;
 
 	TCCR0B |= _BV(CS00) | _BV(CS01); 		//start sampling timer @ Fmcu/64
 
 	while(oversamplingInProgress) {
-//		sleep_mode();						//NOTHING, timer interrupt flag is reset in ADC interrupt routine
+		//NOTHING, timer interrupt flag is reset in ADC interrupt routine
 	}
 
 	adcOversampled = oversamplingSum >> OVERSAMPLE_SHIFT;
@@ -63,6 +62,9 @@ unsigned long readAdcOversampled(unsigned char channel) {
 inline void adcInit() {
     set_sleep_mode(SLEEP_MODE_ADC);
 	DIDR0 |= _BV(ADC0D) | _BV(ADC1D);			//disable digital input buffer on ADC pins
-	ADCSRA |= _BV(ADEN) | _BV(ADPS0) | _BV(ADPS1) | _BV(ADPS2); //enable ADC on slowest clock
+	ADCSRA |= _BV(ADEN) | _BV(ADPS0) | _BV(ADPS1) | _BV(ADPS2); //enable ADC on the slowest clock - 125kHz
 	ADCSRA |= _BV(ADIE); 						//ADC interrupt enable
+
+	TCCR0A = _BV(WGM01);// |_BV(COM0A0)     // clear timer on compare match  
+	OCR0A = 78; 							//compare match A @ 3.2kHz - this will be the sampling frequency
 }
