@@ -123,15 +123,21 @@ void onI2CError(uint8_t requestId) {
 	usartPuts("Transmission error\r\n");
 }
 
+#define READER_ENABLE PD2
+
+static inline void readerEnable() {
+	DDRD |= _BV(PD2);
+	PORTD |= _BV(READER_ENABLE);
+}
+
 void main(void) {
 	sei();
 	adcInit();
 	DDRB |= _BV(PB1) | _BV(PB2);
 	usartInit(UBRR_115200);
-	DDRD |= _BV(PD2);
-	PORTD |= _BV(PD2);
-
-	PORTC |= _BV(PC5) | _BV(PC4);//enable weak pullups
+	readerEnable();
+	
+	PORTC |= _BV(PC5) | _BV(PC4);//enable I2C weak pullups
 
 	usartPuts("Hello\r\n");
 	usartWaitToFinish();
