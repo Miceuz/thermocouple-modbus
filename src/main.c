@@ -150,9 +150,9 @@ static inline void debug() {
 	//~ waitUsartToFinish();
 
 //	unsigned long amplifiedTc = ((long)readAdcOversampled(1) - (long)offset) * (float)5000 / (float)16383 / INSTAMP_GAIN;
-	unsigned long tcMv = (((long)readAdcOversampled(1) - (long)offset) * 49508) >> 14; //units - 1 uV
+	unsigned long tcMicrovolts = (((long)readAdcOversampled(1) - (long)offset) * 49508) >> 14; //units - 1 uV
 
-	long compensatedTemp = mvToC(ambient, tcMv);
+	long compensatedTemp = thermocoupleConvertWithCJCompensation(tcMicrovolts, ambient);
 	usartPuts(ltoa(compensatedTemp, buffer, 10));
 	usartPuts(", ");
 
@@ -170,13 +170,21 @@ void onI2CError(uint8_t requestId) {
 	usartPuts("Transmission error\r\n");
 }
 
+#define READER_ENABLE PD2
+
+static inline void readerEnable() {
+	DDRD |= _BV(PD2);
+	PORTD |= _BV(READER_ENABLE);
+}
+
 void main(void) {
 	sei();
 	adcInit();
 	DDRB |= _BV(PB1) | _BV(PB2);
 	usartInit(UBRR_115200);
-	DDRD |= _BV(PD2);
-	PORTD |= _BV(PD2);
+	readerEnable();
+	
+	PORTC |= _BV(PC5) | _BV(PC4);//enable I2C weak pullups
 
 	PORTC |= _BV(PC5) | _BV(PC4);//enable weak pullups
 
@@ -197,7 +205,7 @@ void main(void) {
 //		PORTB &= ~_BV(PB2);
 //		_delay_ms(10);
 		debug();
-		//task_I2CTWI();
+		task_I2CTWI();
 		//~ unsigned long i;
 		//~ char* buffer = "123456789ABCDEF00";
 		//~ for(i = 0; i < 16383; i++) {

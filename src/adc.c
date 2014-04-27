@@ -52,7 +52,7 @@ unsigned long readAdcOversampled(unsigned char channel) {
 	TCCR0B |= _BV(CS00) | _BV(CS01); 		//start sampling timer @ Fmcu/64
 
 	while(oversamplingInProgress) {
-		sleep_mode();						//NOTHING, timer interrupt flag is reset in ADC interrupt routine
+//		sleep_mode();						//NOTHING, timer interrupt flag is reset in ADC interrupt routine
 	}
 
 	adcOversampled = oversamplingSum >> OVERSAMPLE_SHIFT;
