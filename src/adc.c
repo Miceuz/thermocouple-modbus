@@ -49,7 +49,7 @@ unsigned long readAdcOversampled(unsigned char channel) {
 	ADMUX = channel;
 
 	TCCR0B |= _BV(CS00) | _BV(CS01); 		//start sampling timer @ Fmcu/64
-
+	
 	while(oversamplingInProgress) {
 		//NOTHING, timer interrupt flag is reset in ADC interrupt routine
 	}
@@ -59,6 +59,7 @@ unsigned long readAdcOversampled(unsigned char channel) {
 	return adcOversampled;
 }
 
+
 inline void adcInit() {
     set_sleep_mode(SLEEP_MODE_ADC);
 	DIDR0 |= _BV(ADC0D) | _BV(ADC1D);			//disable digital input buffer on ADC pins
@@ -67,4 +68,9 @@ inline void adcInit() {
 
 	TCCR0A = _BV(WGM01);// |_BV(COM0A0)     // clear timer on compare match  
 	OCR0A = 78; 							//compare match A @ 3.2kHz - this will be the sampling frequency
+	
+	DDRD |= _BV(PD3); //OC2B pin as output
+	OCR2A = 78;
+	TCCR2A = _BV(COM2B0) | _BV(WGM21);
+	TCCR2B |= _BV(CS20) | _BV(CS21) | _BV(CS22);
 }
