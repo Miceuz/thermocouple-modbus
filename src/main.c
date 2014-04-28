@@ -78,9 +78,7 @@ static inline uint16_t filter(int32_t thisTc) {
 	return (uint16_t) tcFiltered;
 }
 
-
-static inline void debug() {
-
+static inline long getTCTemperature() {
 //	int ambient = ((double)readAdc(0) * ((float)5000/(float)1024) - 1000)/20; //cia buvo kazkoks grib
 //  (x * 5 / 1023. - 1)/0.02 -- teisinga formule temperaturai paskaiciuoti
 //  x * (5 / 0.02) / 1023 - 1/0.02
@@ -114,6 +112,12 @@ static inline void debug() {
 	unsigned long tcMicrovolts = (((long)readAdcOversampled(1) - (long)offset) * 49508) >> 14; //units - 1 uV
 
 	long compensatedTemp = thermocoupleConvertWithCJCompensation(tcMicrovolts, ambient);
+	return compensatedTemp;
+}
+
+static inline void debug() {
+	long compensatedTemp = getTCTemperature();
+	
 	usartPuts(ltoa(compensatedTemp, buffer, 10));
 	usartPuts(", ");
 
