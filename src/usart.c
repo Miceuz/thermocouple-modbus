@@ -1,7 +1,13 @@
 #include <avr/io.h>
 #include "usart.h"
 
+inline void usartReaderDisable() {
+	READER_DISABLE_PORT |= _BV(READER_DISABLE_PIN);
+}
+
 inline void usartInit( unsigned int ubrr ){
+	READER_DISABLE_DIR |= _BV(READER_DISABLE_PIN);//~RE pin of RS-485 transceiver
+
 	UBRR0H = (unsigned char)(ubrr>>8);
 	UBRR0L = (unsigned char)ubrr;
 	UCSR0B = (1 << TXEN0);     //Enable TX

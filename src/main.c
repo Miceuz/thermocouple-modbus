@@ -136,21 +136,15 @@ void onI2CError(uint8_t requestId) {
 	usartPuts("Transmission error\r\n");
 }
 
-#define READER_ENABLE PD2
-
-static inline void readerEnable() {
-	DDRD |= _BV(PD2);
-	PORTD |= _BV(READER_ENABLE);
-}
-
 void main(void) {
 	sei();
 	adcInit();
 	pidInit(16, 5, 0);
 	pidSetSetpoint(5000);
 	DDRB |= _BV(PB1) | _BV(PB2);
+
 	usartInit(UBRR_115200);
-	readerEnable();
+	usartReaderDisable();
 	
 	PORTC |= _BV(PC5) | _BV(PC4);//enable I2C weak pullups
 
