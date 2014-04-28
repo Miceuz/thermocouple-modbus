@@ -9,6 +9,7 @@
 #include "I2CmasterTWI.h"
 
 #define INSTAMP_GAIN 101
+#define MAX_PROCESS_VALUE 170000L
 
 unsigned int currDacValue = 0;
 unsigned int tcFiltered = 0;
@@ -77,46 +78,6 @@ static inline uint16_t filter(int32_t thisTc) {
 	return (uint16_t) tcFiltered;
 }
 
-long integralTerm = 0;
-long previousInput = 0;
-long setpoint = 5000;
-
-uint8_t P = 16;
-uint8_t I = 5;
-uint8_t D = 0;
-
-uint8_t pidIteration(unsigned long input) {
-	//norm to 10000
-	input = input * 10000L / 170000L;
-
-	long error = setpoint - input;  
-	integralTerm += I * error;
-	
-	if(integralTerm / 1000L > 10000L) {
-		integralTerm = 1000L * 10000L;
-	} 
-	
-	long dInput = (input - previousInput);
-	previousInput = input;
-
-	usartPuts(ltoa(P * error, buffer, 10));
-	usartPuts(", ");
-	
-	usartPuts(ltoa(integralTerm/1000L, buffer, 10));
-	usartPuts(", ");
-	
-	long ret = P * error + integralTerm/1000L - D * dInput;
-
-	if(ret > 10000L) 
-		ret = 10000L; 
-	if(ret < 0) 
-		ret = 0; 
-
-	usartPuts(ltoa(ret, buffer, 10));
-	usartPuts(", ");
-	
-	return ret * 255L / 10000L;
-}
 
 static inline void debug() {
 
@@ -156,7 +117,8 @@ static inline void debug() {
 	usartPuts(ltoa(compensatedTemp, buffer, 10));
 	usartPuts(", ");
 
-	uint8_t controlSignal = pidIteration(compensatedTemp);
+	uint8_t controlSignal = pidRunIteration(compensatedTemp	* 10000L / MAX_PROCESS_VALUE);
+	
 	usartPuts(itoa(controlSignal, buffer, 10));
 	usartPuts("\r\n");
 	usartWaitToFinish();
@@ -180,6 +142,8 @@ static inline void readerEnable() {
 void main(void) {
 	sei();
 	adcInit();
+	pidInit(16, 5, 0);
+	pidSetSetpoint(5000);
 	DDRB |= _BV(PB1) | _BV(PB2);
 	usartInit(UBRR_115200);
 	readerEnable();
