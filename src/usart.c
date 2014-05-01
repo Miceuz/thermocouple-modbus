@@ -93,7 +93,10 @@ void uartPutc(unsigned char data) {
 
 uint16_t usartGetc() {
 	uint8_t data;
-	if(RING_BUFFER_STATUS_OK == ringBufferRead(&rxBuffer, &data)) {
+	cli();
+	uint8_t status = ringBufferRead(&rxBuffer, &data);
+	sei();
+	if(RING_BUFFER_STATUS_OK == status) {
 		return data;
 	} else {
 		return USART_NO_DATA;
