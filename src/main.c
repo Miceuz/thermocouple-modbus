@@ -85,7 +85,22 @@ static inline long getTCTemperature() {
 //  x * 250 / 1023 - 50
 //  x * (250 * 1024/1023) / 1024 - 50
 
+	cli();
+	uint8_t txInProgress = UCSR0B & _BV(UDRIE0);
+	if(txInProgress) {
+		UCSR0B &= ~_BV(UDRIE0);
+		usartWaitToFinish();
+		PORTB &= ~_BV(PB1);
+	}
+	sei();
+
 	long adc = (long)readAdc(0);
+
+	if(txInProgress) {
+		UCSR0B |= _BV(UDRIE0);
+		PORTB |= _BV(PB1);
+	}
+
 //	usartPuts(ltoa(adc, buffer, 10));
 //	usartPuts(", ");
 //	usartWaitToFinish();
@@ -96,12 +111,13 @@ static inline long getTCTemperature() {
 //	usartPuts(", ");
 //	usartWaitToFinish();
 
-	unsigned long adcValue = readAdcOversampled(1);
-	filter(adcValue);
+//	unsigned long adcValue = readAdcOversampled(1);
+//	filter(adcValue);
 
 	//~ USART_tx_string(utoa(adcValue, buffer, 10));
 	//~ USART_tx_string(", ");
 	//~ waitUsartToFinish();
+
 
 	unsigned long offset = readAdcOversampled(2);
 	//~ USART_tx_string(utoa(offset, buffer, 10));
@@ -117,7 +133,6 @@ static inline long getTCTemperature() {
 
 static inline void debug() {
 	long compensatedTemp = getTCTemperature();
-	
 	usartPuts(ltoa(compensatedTemp, buffer, 10));
 	usartPuts(", ");
 
@@ -125,11 +140,10 @@ static inline void debug() {
 	
 	usartPuts(itoa(controlSignal, buffer, 10));
 	usartPuts("\r\n");
-	usartWaitToFinish();
 
 	I2CTWI_transmit2Bytes(0x20 << 1, 1, controlSignal);
 	I2CTWI_getState();
-	_delay_ms(10);
+	//_delay_ms(1);
 }
 
 void onI2CError(uint8_t requestId) {
@@ -141,48 +155,21 @@ void main(void) {
 	adcInit();
 	pidInit(16, 5, 0);
 	pidSetSetpoint(5000);
-	DDRB |= _BV(PB1) | _BV(PB2);
+	DDRB |= _BV(PB1) | _BV(PB2); //leds
 
 	usartInit(UBRR_115200);
-	usartReaderDisable();
-	
+
 	PORTC |= _BV(PC5) | _BV(PC4);//enable I2C weak pullups
 
-	PORTC |= _BV(PC5) | _BV(PC4);//enable weak pullups
-
 	usartPuts("Hello\r\n");
-	usartWaitToFinish();
-	usartPuts("how are you? \r\n");
-	usartWaitToFinish();
+//	usartPuts("how are you? 00000000000000000000000000000000000000000000000000\r\n");
+//	usartWaitToFinish();
+	
 	I2CTWI_initMaster(100);
 	I2CTWI_setTransmissionErrorHandler(onI2CError);
-	//I2CTWI_transmitByte(0x20 << 1, 12);
-//	I2CTWI_getState();
-	
-	//~ I2CTWI_transmit2Bytes(0x20<<1, 1, 225);
-	//~ I2CTWI_getState();
 
 	while (1) {
-//		PORTB |= _BV(PB1);
-//		PORTB &= ~_BV(PB2);
-//		_delay_ms(10);
 		debug();
 		task_I2CTWI();
-		//~ unsigned long i;
-		//~ char* buffer = "123456789ABCDEF00";
-		//~ for(i = 0; i < 16383; i++) {
-			//~ usartPuts(ltoa(i*100/16383, buffer, 10));
-			//~ usartPuts(", ");
-//~
-			//~ unsigned long tcMv = ((long)i * 49504L) >> 14; //units - 1 uV
-			//~ long compensatedTemp = mvToC(85, tcMv);
-			//~ usartPuts(ltoa(compensatedTemp, buffer, 10));
-			//~ usartPuts("\r\n");
-			//~ usartWaitToFinish();
-		//~ }
-		//testAdcPerformance();
-//		PORTB |= _BV(PB2);
-//		PORTB &= ~_BV(PB1);
-//		_delay_ms(10);
 	}
 }

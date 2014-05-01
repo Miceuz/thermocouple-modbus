@@ -13,6 +13,5 @@
 
 void usartWaitToFinish();
 void usartPuts( char *data );
-inline void usartInit( unsigned int ubrr );
-inline void usartReaderDisable();
+extern inline void usartInit( unsigned int ubrr );
 #endif
