@@ -140,6 +140,7 @@ static inline void debug() {
 	
 	usartPuts(itoa(controlSignal, buffer, 10));
 	usartPuts("\r\n");
+//	usartPuts(" ***************************************************************\r\n");
 
 	I2CTWI_transmit2Bytes(0x20 << 1, 1, controlSignal);
 	I2CTWI_getState();
@@ -162,8 +163,7 @@ void main(void) {
 	PORTC |= _BV(PC5) | _BV(PC4);//enable I2C weak pullups
 
 	usartPuts("Hello\r\n");
-//	usartPuts("how are you? 00000000000000000000000000000000000000000000000000\r\n");
-//	usartWaitToFinish();
+//	usartPuts(" ***************************************************************\r\n");
 	
 	I2CTWI_initMaster(100);
 	I2CTWI_setTransmissionErrorHandler(onI2CError);
@@ -171,5 +171,10 @@ void main(void) {
 	while (1) {
 		debug();
 		task_I2CTWI();
+		uint16_t rx = usartGetc();
+		while(rx < 256) {
+			uartPutc((uint8_t)rx);
+			rx = usartGetc();
+		}
 	}
 }
