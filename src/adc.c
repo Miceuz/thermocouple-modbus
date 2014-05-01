@@ -12,7 +12,6 @@ volatile unsigned char oversamplingInProgress = 0;
 
 
 ISR(ADC_vect) {
-	PORTB |= _BV(PB1);
 	if(!oversamplingInProgress) {
 		return; //in case of non oversampling conversion, just return
 	}
@@ -25,7 +24,6 @@ ISR(ADC_vect) {
 	}
 	TIFR0 |= _BV(OCF0A);//clear timer interrupt flag so that next ADC conversion would be triggered.
 						//as we don't service COMPA interrupt, we have to clean the flag manually.
-	PORTB &= ~_BV(PB1);
 }
 
 unsigned int readAdc(unsigned char channel) {
@@ -33,8 +31,17 @@ unsigned int readAdc(unsigned char channel) {
 	while(_BV(ADSC) & ADCSRA);	//wait for possibly ongoing conversion to complete
 
 	ADMUX = channel;
+
 	ADCSRA |= _BV(ADSC);		//start conversion
-	sleep_mode();
+	while(ADCSRA & _BV(ADSC)) {
+		//NOTHING, the first conversion after MUX change is dirty
+	}
+
+	ADCSRA |= _BV(ADSC);		//start conversion
+	while(ADCSRA & _BV(ADSC)) {
+		sleep_mode();//sleep during second conversion to get better results
+	}
+
 	return ADC;
 }
 
