@@ -7,6 +7,7 @@
 #include "usart.h"
 #include "thermocouple.h"
 #include "I2CmasterTWI.h"
+#include "cli.h"
 
 #define INSTAMP_GAIN 101
 #define MAX_PROCESS_VALUE 170000L
@@ -151,6 +152,26 @@ void onI2CError(uint8_t requestId) {
 	usartPuts("Transmission error\r\n");
 }
 
+uint8_t run = 1;
+
+void cmdStart(int argc, char **argv) {
+	run = 1;
+}
+
+void cmdStop(int argc, char **argv) {
+	run = 0;
+}
+
+void cmdSetpoint(int argc, char **argv) {
+	pidSetSetpoint(atol(argv[1]));
+}
+
+CliCommand commands[CMD_COUNT] = {
+	{"start", cmdStart},
+	{"stop", cmdStop},
+	{"setpoint", cmdSetpoint}
+};
+
 void main(void) {
 	sei();
 	adcInit();
@@ -168,12 +189,17 @@ void main(void) {
 	I2CTWI_initMaster(100);
 	I2CTWI_setTransmissionErrorHandler(onI2CError);
 
+	uint8_t t = 0;
+
 	while (1) {
-		debug();
+		if(run)
+			debug();
+		
 		task_I2CTWI();
+
 		uint16_t rx = usartGetc();
 		while(rx < 256) {
-			uartPutc((uint8_t)rx);
+			cmdPoll((uint8_t) rx);
 			rx = usartGetc();
 		}
 	}
