@@ -1,5 +1,6 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <util/delay.h>
 #include "usart.h"
 #include "buffer.h"
 
@@ -16,17 +17,22 @@ static volatile uint8_t UART_LastRxError;
 
 static volatile uint8_t rxInProgress = 0;
 
-static inline void usartReaderDisable() {
+static inline void readerDisable() {
 	READER_DISABLE_PORT |= _BV(READER_DISABLE_PIN);
+}
+
+static inline void readerEnable() {
+	READER_DISABLE_PORT &= ~_BV(READER_DISABLE_PIN);
 }
 
 inline void usartInit( unsigned int ubrr ){
 	READER_DISABLE_DIR |= _BV(READER_DISABLE_PIN);//~RE pin of RS-485 transceiver
-	usartReaderDisable();
+	readerEnable();
 
 	UBRR0H = (unsigned char) (ubrr>>8);
 	UBRR0L = (unsigned char) ubrr;
-	UCSR0B = (1 << TXEN0);     //Enable TX
+	UART0_CONTROL = _BV(RXCIE0) | (1<<RXEN0)|(1<<TXEN0);
+	UART0_CONTROL |= _BV(TXCIE0);
 	UCSR0C = (3 << UCSZ00);    //asynchronous 8 N 1
 
 	ringBufferInit(&txBuffer);
@@ -38,8 +44,8 @@ Function: UART Receive Complete interrupt
 Purpose: called when the UART has received a character
 **************************************************************************/
 ISR(UART0_RECEIVE_INTERRUPT) {
-	ringBufferWrite(&rxBuffer, UART0_DATA);
 	UART_LastRxError = (UART0_STATUS & (_BV(FE0)|_BV(DOR0)) );
+	ringBufferWrite(&rxBuffer, UART0_DATA);
 }
 
 /*************************************************************************
@@ -51,6 +57,7 @@ ISR(UART0_TRANSMIT_INTERRUPT) {
 		PORTB |= _BV(PB1);
 		uint8_t data = 0;
 		if(RING_BUFFER_STATUS_OK == ringBufferRead(&txBuffer, &data)) {
+			readerDisable();
 			UART0_DATA = data;
 		} else {
 //			ringBufferClear(&txBuffer);
@@ -64,21 +71,33 @@ ISR(UART0_TRANSMIT_INTERRUPT) {
 	}
 }
 
+ISR(USART_TX_vect) {
+	readerEnable();
+}
+
 void uartPutc(unsigned char data) {
-	if(rxInProgress) {
-		ringBufferWrite(&txBuffer, data);
-		return;
-	} else {
-		while (ringBufferIsFull(&txBuffer)){
-			;//wait for free space in buffer
-			UART0_CONTROL |= _BV(UART0_UDRIE);
-			PORTB |= _BV(PB2);
-		} 
-		PORTB &= ~_BV(PB2);
-		ringBufferWrite(&txBuffer, data);
-	}
+	while (ringBufferIsFull(&txBuffer)){
+		;//wait for free space in buffer
+		UART0_CONTROL |= _BV(UART0_UDRIE);
+		PORTB |= _BV(PB2);
+	} 
+	PORTB &= ~_BV(PB2);
+	cli();
+	ringBufferWrite(&txBuffer, data);
+	sei();
 	/* enable UDRE interrupt */
 	UART0_CONTROL |= _BV(UART0_UDRIE);
+}
+
+#define USART_NO_DATA 0x0100
+
+uint16_t usartGetc() {
+	uint8_t data;
+	if(RING_BUFFER_STATUS_OK == ringBufferRead(&rxBuffer, &data)) {
+		return data;
+	} else {
+		return USART_NO_DATA;
+	}
 }
 
 void usartPuts(char *data) {

@@ -13,5 +13,8 @@
 
 void usartWaitToFinish();
 void usartPuts( char *data );
+void uartPutc(unsigned char data);
+uint16_t usartGetc();
+
 extern inline void usartInit( unsigned int ubrr );
 #endif
